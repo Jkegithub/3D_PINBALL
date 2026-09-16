@@ -1,0 +1,21 @@
+{
+  "schema": "pinball-layout/1",
+  "units": "millimetres",
+  "table": { "width": 460, "length": 760, "slope_degrees": 6.5, "ball_diameter": 27 },
+  "levels": { "PF0": 0, "R1": 38, "R2": 76 },
+  "selected_layout": "double-helix",
+  "mechanisms": ["two_flippers", "three_bumpers", "central_saucer", "two_loop_ramps", "two_ball_locks", "three_ball_multiball"],
+  "rules": {
+    "lock_qualification": ["complete_left_loop", "complete_right_loop", "hit_central_saucer"],
+    "multiball_start": "hit_qualified_saucer_after_two_locks",
+    "ball_save_seconds": 8,
+    "multiball_save_seconds": 10
+  },
+  "physics_defaults": { "gravity": 820, "wall_restitution": 0.72, "ramp_minimum_speed": 720 },
+  "audio": { "engine": "web-audio-synthesis", "default_volume": 0.55 },
+  "ramp_paths_normalized": {
+    "left": [[0.228,0.711],[0.109,0.533],[0.120,0.197],[0.418,0.125],[0.750,0.164],[0.696,0.395],[0.587,0.737]],
+    "right": [[0.667,0.711],[0.787,0.533],[0.776,0.197],[0.477,0.125],[0.146,0.164],[0.200,0.395],[0.309,0.737]]
+  },
+  "godot_mapping": { "wall":"StaticBody3D", "ball":"RigidBody3D", "flipper":"AnimatableBody3D", "ramp":"Curve3D", "trigger":"Area3D" }
+}

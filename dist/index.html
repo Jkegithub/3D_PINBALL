@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Drei kompakte Flipper-Layouts im Vergleich und ein spielbarer 2,5D-Prototyp.">
+  <title>Pinball Layout Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">KOMPAKT · 460 × 760 MM · 6,5°</p>
+        <h1>Pinball Layout Lab</h1>
+      </div>
+      <div class="legend" aria-label="Höhenlegende">
+        <span><i class="level l0"></i>PF 0</span><span><i class="level l1"></i>+38</span><span><i class="level l2"></i>+76 mm</span>
+      </div>
+    </header>
+
+    <section class="workspace" aria-label="Layout-Arbeitsfläche">
+      <article class="playfield-shell">
+        <div class="canvas-wrap">
+          <canvas id="game" width="920" height="1520" aria-label="Spielbarer Flipper-Prototyp"></canvas>
+          <div class="hud"><span>PUNKTE <b id="score">000000</b></span><span>BÄLLE <b id="balls">3</b></span><span>LOCKS <b id="locks">0/2</b></span><span>QUALI <b id="qualifier">–</b></span><span id="mode">BEREIT</span></div>
+          <div class="canvas-overlay">
+            <span class="badge">SIEGER · DOUBLE HELIX</span>
+            <button id="startButton" type="button">Simulation starten</button>
+          </div>
+        </div>
+        <div class="control-row">
+          <span>← / A linker Flipper</span><span>→ / D rechter Flipper</span><span>Leertaste Plunger</span><span>F2 Diagnose</span>
+        </div>
+        <div class="part-legend" aria-label="Bauteile"><span><i class="part-post"></i>Gummipfosten</span><span><i class="part-sling"></i>Slingshot · aktiver Abweiser</span></div>
+        <div class="touch-controls" aria-label="Touchsteuerung"><button id="leftButton">LINKS</button><button id="launchButton">PLUNGER</button><button id="rightButton">RECHTS</button></div>
+      </article>
+
+      <aside class="panel">
+        <nav class="tabs" aria-label="Layoutauswahl">
+          <button class="tab active" data-layout="helix">01</button>
+          <button class="tab" data-layout="switchback">02</button>
+          <button class="tab" data-layout="crossfeed">03</button>
+        </nav>
+        <p class="simulation-note"><b>SIMULATION:</b> Double Helix · Tabs 02/03 zeigen nur die Konzeptdaten.</p>
+        <div id="layoutDetail">
+          <p class="kicker">LAYOUT 01 · EMPFEHLUNG</p>
+          <h2>Double Helix</h2>
+          <p>Zwei gegensinnig geführte Loop-Rampen teilen Einläufe, aber niemals Rückläufe. Der mittige Saucer entscheidet zwischen kontrolliertem Feed und Lock.</p>
+          <div class="score-grid">
+            <span>Schussvielfalt <b>9</b></span><span>Platzbedarf <b>8</b></span>
+            <span>Physikrisiko <b>7</b></span><span>Lesbarkeit <b>8</b></span>
+            <span>Aufwand <b>7</b></span><span class="total">Gesamt <b>39/50</b></span>
+          </div>
+          <div class="mechanics">
+            <h3>Kernfluss</h3>
+            <ol>
+              <li>Linker Innenloop → rechter Inlane-Feed</li>
+              <li>Rechter Außenorbit → linker Habitrail</li>
+              <li>Zentraler Saucer → Lock oder Pop-Feed</li>
+              <li>Beide Loops → Saucer qualifiziert</li>
+              <li>Zwei Locks + erneute Qualifikation → 3-Ball-Multiball</li>
+            </ol>
+          </div>
+        </div>
+        <div class="tuning">
+          <h3>PHYSIK-TUNING</h3>
+          <label>Hangabtrieb <output id="gravityOut">820</output><input id="gravity" type="range" min="450" max="1150" value="820"></label>
+          <label>Bandenenergie <output id="bounceOut">72%</output><input id="bounce" type="range" min="50" max="92" value="72"></label>
+          <label>Rampenminimum <output id="rampOut">720</output><input id="rampMin" type="range" min="520" max="980" value="720"></label>
+          <label>Lautstärke <output id="volumeOut">55%</output><input id="volume" type="range" min="0" max="100" value="55"></label>
+          <div class="tuning-actions"><button id="multiballTest">Multiball testen</button><button id="resetGame">Reset</button><button id="audioToggle" aria-pressed="false">Audio: An</button><button id="debugToggle" aria-pressed="false">Diagnose: Aus</button></div>
+          <section class="debug-panel" id="debugPanel" hidden aria-label="Diagnose">
+            <p id="debugReadout">Keine aktive Kugel</p>
+            <ol id="eventLog" aria-live="polite"></ol>
+          </section>
+        </div>
+      </aside>
+    </section>
+
+    <section class="concepts" aria-labelledby="compareTitle">
+      <div class="section-heading"><p class="eyebrow">ENTWURFSAUSWAHL</p><h2 id="compareTitle">Drei eigenständige Ballflüsse</h2></div>
+      <div class="concept-grid" id="conceptGrid"></div>
+      <div class="decision" id="decision"></div>
+    </section>
+
+    <section class="port-doc" aria-labelledby="portTitle">
+      <p class="eyebrow">PORTIERUNGSVERTRAG</p><h2 id="portTitle">Web → Godot ohne Layout-Neuentwurf</h2>
+      <div class="port-grid">
+        <article><b>01 · Geometrie</b><p>460 × 760 mm, Kugel Ø 27 mm, Spielfeld PF0, Rampen +38/+76 mm. Koordinaten bleiben normalisiert und werden in Godot auf Meter skaliert.</p></article>
+        <article><b>02 · Bauteile</b><p>Wände → StaticBody3D, Kugeln → RigidBody3D, Flipper → AnimatableBody3D, Rampenpfade → Curve3D, Saucer und Gates → Area3D.</p></article>
+        <article><b>03 · Zustände</b><p>Ballzustände ground/ramp/saucer/locked bleiben engine-unabhängig. Punkte, Locks, Diverter und Multiball laufen als getrennte Regelmaschine.</p></article>
+      </div>
+      <p class="port-note">Der Web-Prototyp führt Rampenkugeln entlang parametrisierter Pfade. Im Godot-Port werden diese durch echte 3D-Rinnen mit Kollidern ersetzt; die XY-Führung, Höhenprofile und Ein-/Ausgänge bleiben erhalten.</p>
+      <a class="download" href="layout-data.json" download>Layoutdaten herunterladen · JSON</a>
+    </section>
+  </main>
+  <script src="app.js?v=20260916-7"></script>
+</body>
+</html>
