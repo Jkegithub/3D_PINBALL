@@ -308,6 +308,7 @@ bindHold('#leftButton','left');bindHold('#rightButton','right');bindHold('#launc
    Haengt eine Kugel am Plunger, spannt jede Beruehrung stattdessen den Plunger. */
 const touchSide=new Map();
 function surfaceDown(e){
+ if(e.pointerType!=='touch')return;   /* Maus und Stift bleiben aussen vor */
  e.preventDefault();
  if(!running){start();return}
  if(balls.some(b=>b.held)){touchSide.set(e.pointerId,'plunger');keys.plunger=true;playSound('charge')}
