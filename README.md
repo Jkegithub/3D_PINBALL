@@ -6,7 +6,9 @@ mittiger Saucer, zwei Ball-Locks, anschließend 3-Ball-Multiball.
 
 Statisches HTML, Canvas 2D, Web Audio. **Keine Abhängigkeiten, kein Buildschritt.**
 
-## Starten
+**→ [Spielen](https://jkegithub.github.io/3D_PINBALL/)**
+
+## Lokal starten
 
 ```bash
 npx serve dist

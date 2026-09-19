@@ -1,0 +1,56 @@
+name: dist nach GitHub Pages
+
+# Veroeffentlicht nur dist/. tools/ und die Uebergabedateien bleiben aus dem Web
+# heraus, und die App liegt direkt auf der Seitenwurzel statt unter /dist/.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Laufende Veroeffentlichungen nicht abbrechen, aber auch nicht ueberholen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax
+        run: node --check dist/app.js
+      - name: Layoutdaten lesbar
+        run: node -e "JSON.parse(require('fs').readFileSync('dist/layout-data.json','utf8'))"
+      - name: Passt der Ball geometrisch durch
+        run: node tools/clearance.js
+      - name: Kommt er auch tatsaechlich durch
+        run: node tools/physics-test.js
+
+  bauen:
+    needs: pruefen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  veroeffentlichen:
+    needs: bauen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
