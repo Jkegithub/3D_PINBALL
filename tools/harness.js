@@ -72,7 +72,8 @@ const EXPORTS = `
   get simTime() { return simTime },
   set ballSaveUntil(v) { ballSaveUntil = v },
   geometry: { R, W, H, PF_CENTER, walls, slings, posts, bumpers, aprons,
-              flippers, rampPaths, plungerPath, oneWayGate }
+              flippers, rampPaths, plungerPath, oneWayGate },
+  tuning
 };`;
 
 // appPath erlaubt es, einen aelteren Stand gegen den aktuellen zu messen, etwa

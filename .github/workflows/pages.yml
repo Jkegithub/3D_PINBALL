@@ -30,6 +30,9 @@ jobs:
         run: node --check dist/app.js
       - name: Layoutdaten lesbar
         run: node -e "JSON.parse(require('fs').readFileSync('dist/layout-data.json','utf8'))"
+      # Faengt einen vergessenen Export sofort ab, statt Monate spaeter.
+      - name: Layoutdaten auf dem Stand von app.js
+        run: node tools/export-layout.js --check
       - name: Passt der Ball geometrisch durch
         run: node tools/clearance.js
       - name: Kommt er auch tatsaechlich durch

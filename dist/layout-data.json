@@ -1,21 +1,376 @@
 {
-  "schema": "pinball-layout/1",
-  "units": "millimetres",
-  "table": { "width": 460, "length": 760, "slope_degrees": 6.5, "ball_diameter": 27 },
-  "levels": { "PF0": 0, "R1": 38, "R2": 76 },
+  "schema": "pinball-layout/2",
+  "generated_by": "tools/export-layout.js aus dist/app.js",
+  "warning": "ERZEUGTE DATEI - nicht von Hand bearbeiten. Aenderungen gehoeren in dist/app.js.",
+  "source_units": "Canvas-Pixel, Ursprung oben links, y zeigt hangabwaerts zum Spieler",
+  "scale": {
+    "anchor": "Tischbreite 460 mm",
+    "px_per_mm": 1.6957,
+    "origin_px": [
+      70,
+      100
+    ],
+    "conversion": "mm = (px - origin_px) / px_per_mm",
+    "note": "Ein einziger Massstab fuer beide Achsen. Die Pixelgeometrie gilt, die Millimeterangaben sind daraus abgeleitet."
+  },
+  "table": {
+    "width_mm": 460,
+    "length_mm": 807.9,
+    "slope_degrees": 6.5,
+    "ball_diameter_mm": 28.3
+  },
+  "levels_mm": {
+    "PF0": 0,
+    "R1": 38,
+    "R2": 76
+  },
+  "canvas_px": {
+    "width": 920,
+    "height": 1520
+  },
+  "playfield_px": {
+    "x_min": 70,
+    "x_max": 850,
+    "y_min": 100,
+    "y_max": 1470,
+    "center_x": 412
+  },
+  "ball_px": {
+    "radius": 24,
+    "diameter": 48
+  },
+  "collision_margins_px": {
+    "wall": 10,
+    "sling": 10,
+    "flipper": 18,
+    "post_bumper": "jeweils r des Bauteils",
+    "formula": "min = ball_px.radius + margin"
+  },
+  "geometry_px": {
+    "walls": [
+      [
+        70,
+        100,
+        70,
+        1170
+      ],
+      [
+        70,
+        100,
+        850,
+        100
+      ],
+      [
+        850,
+        100,
+        850,
+        1420
+      ],
+      [
+        70,
+        1170,
+        242,
+        1325
+      ],
+      [
+        242,
+        1325,
+        272,
+        1470
+      ],
+      [
+        755,
+        1170,
+        582,
+        1325
+      ],
+      [
+        582,
+        1325,
+        552,
+        1470
+      ],
+      [
+        755,
+        1420,
+        850,
+        1420
+      ],
+      [
+        755,
+        1420,
+        755,
+        650
+      ],
+      [
+        755,
+        500,
+        755,
+        100
+      ]
+    ],
+    "slings": [
+      [
+        [
+          150,
+          990
+        ],
+        [
+          265,
+          1080
+        ],
+        [
+          180,
+          1150
+        ]
+      ],
+      [
+        [
+          674,
+          990
+        ],
+        [
+          559,
+          1080
+        ],
+        [
+          644,
+          1150
+        ]
+      ]
+    ],
+    "posts": [
+      {
+        "x": 168,
+        "y": 1120,
+        "r": 20
+      },
+      {
+        "x": 656,
+        "y": 1120,
+        "r": 20
+      },
+      {
+        "x": 292,
+        "y": 1040,
+        "r": 18
+      },
+      {
+        "x": 532,
+        "y": 1040,
+        "r": 18
+      }
+    ],
+    "bumpers": [
+      {
+        "x": 330,
+        "y": 610,
+        "r": 45
+      },
+      {
+        "x": 494,
+        "y": 610,
+        "r": 45
+      },
+      {
+        "x": 412,
+        "y": 486,
+        "r": 42
+      }
+    ],
+    "aprons": [
+      [
+        [
+          70,
+          1170
+        ],
+        [
+          242,
+          1325
+        ],
+        [
+          272,
+          1470
+        ],
+        [
+          70,
+          1470
+        ]
+      ],
+      [
+        [
+          755,
+          1170
+        ],
+        [
+          582,
+          1325
+        ],
+        [
+          552,
+          1470
+        ],
+        [
+          755,
+          1470
+        ]
+      ]
+    ],
+    "flippers": {
+      "left": {
+        "pivot": [
+          242,
+          1325
+        ],
+        "length": 130,
+        "rest_angle_rad": 0.28
+      },
+      "right": {
+        "pivot": [
+          582,
+          1325
+        ],
+        "length": 130,
+        "rest_angle_rad": 2.86159
+      }
+    },
+    "ramp_paths": {
+      "left": [
+        [
+          225,
+          1080
+        ],
+        [
+          100,
+          810
+        ],
+        [
+          110,
+          300
+        ],
+        [
+          385,
+          190
+        ],
+        [
+          690,
+          250
+        ],
+        [
+          640,
+          600
+        ],
+        [
+          540,
+          1120
+        ]
+      ],
+      "right": [
+        [
+          599,
+          1080
+        ],
+        [
+          724,
+          810
+        ],
+        [
+          714,
+          300
+        ],
+        [
+          439,
+          190
+        ],
+        [
+          134,
+          250
+        ],
+        [
+          184,
+          600
+        ],
+        [
+          284,
+          1120
+        ]
+      ]
+    },
+    "ramp_height_profile": "z = sin(pi * u) * 76, u von 0 bis 1 entlang des Catmull-Rom-Pfades",
+    "plunger_path": [
+      [
+        812,
+        1340
+      ],
+      [
+        812,
+        1040
+      ],
+      [
+        812,
+        720
+      ],
+      [
+        790,
+        610
+      ],
+      [
+        690,
+        590
+      ]
+    ],
+    "one_way_gate": [
+      755,
+      500,
+      755,
+      650
+    ],
+    "saucer": {
+      "center": [
+        412,
+        770
+      ],
+      "trigger_radius": 62
+    }
+  },
+  "physics_px": {
+    "fixed_step_hz": 120,
+    "gravity": 820,
+    "wall_restitution": 0.72,
+    "ramp_minimum_speed": 720,
+    "speed_cap": 1850,
+    "gravity_m_per_s2": 0.484,
+    "real_table_gravity_m_per_s2": 1.111,
+    "note": "Nicht physikalisch. Vor einer Portierung neu abstimmen."
+  },
   "selected_layout": "double-helix",
-  "mechanisms": ["two_flippers", "three_bumpers", "central_saucer", "two_loop_ramps", "two_ball_locks", "three_ball_multiball"],
+  "mechanisms": [
+    "two_flippers",
+    "three_bumpers",
+    "central_saucer",
+    "two_loop_ramps",
+    "two_ball_locks",
+    "three_ball_multiball"
+  ],
   "rules": {
-    "lock_qualification": ["complete_left_loop", "complete_right_loop", "hit_central_saucer"],
+    "lock_qualification": [
+      "complete_left_loop",
+      "complete_right_loop",
+      "hit_central_saucer"
+    ],
     "multiball_start": "hit_qualified_saucer_after_two_locks",
     "ball_save_seconds": 8,
     "multiball_save_seconds": 10
   },
-  "physics_defaults": { "gravity": 820, "wall_restitution": 0.72, "ramp_minimum_speed": 720 },
-  "audio": { "engine": "web-audio-synthesis", "default_volume": 0.55 },
-  "ramp_paths_normalized": {
-    "left": [[0.245,0.711],[0.109,0.533],[0.120,0.197],[0.418,0.125],[0.750,0.164],[0.696,0.395],[0.587,0.737]],
-    "right": [[0.651,0.711],[0.787,0.533],[0.776,0.197],[0.477,0.125],[0.146,0.164],[0.200,0.395],[0.309,0.737]]
+  "audio": {
+    "engine": "web-audio-synthesis",
+    "default_volume": 0.55
   },
-  "godot_mapping": { "wall":"StaticBody3D", "ball":"RigidBody3D", "flipper":"AnimatableBody3D", "ramp":"Curve3D", "trigger":"Area3D" }
+  "godot_mapping": {
+    "wall": "StaticBody3D",
+    "ball": "RigidBody3D",
+    "flipper": "AnimatableBody3D",
+    "ramp": "Curve3D",
+    "trigger": "Area3D"
+  }
 }
