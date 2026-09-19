@@ -102,16 +102,21 @@ const ORTE = {
   'Ruecklauf rechts': [714, 1050],
   'Drain':            [PF_CENTER, 1500]
 };
+// Laufwege sollen bequem passierbar sein. Der Drain NICHT: er muss offen sein,
+// damit die Partie enden kann, aber knapp, sonst faellt die Kugel staendig durch.
+// Genau dieser Unterschied fehlte am 19.09.2026 und riss das Mittelloch auf.
+const BEQUEM = { min: 12, max: Infinity };
+const KNAPP  = { min: 3,  max: 12 };
 const ROUTEN = [
-  ['Oberfeld', 'linker Flipper'],
-  ['Oberfeld', 'rechter Flipper'],
-  ['Oberfeld', 'Ruecklauf links'],
-  ['Oberfeld', 'Ruecklauf rechts'],
-  ['Ruecklauf links', 'linker Flipper'],
-  ['Ruecklauf rechts', 'rechter Flipper'],
-  ['linker Flipper', 'Drain'],
-  ['Oberfeld', 'ueber den Pops'],
-  ['Oberfeld', 'Saucer']
+  ['Oberfeld', 'linker Flipper', BEQUEM],
+  ['Oberfeld', 'rechter Flipper', BEQUEM],
+  ['Oberfeld', 'Ruecklauf links', BEQUEM],
+  ['Oberfeld', 'Ruecklauf rechts', BEQUEM],
+  ['Ruecklauf links', 'linker Flipper', BEQUEM],
+  ['Ruecklauf rechts', 'rechter Flipper', BEQUEM],
+  ['linker Flipper', 'Drain', KNAPP],
+  ['Oberfeld', 'ueber den Pops', BEQUEM],
+  ['Oberfeld', 'Saucer', BEQUEM]
 ];
 
 console.log(`Ballradius R = ${R}  (Durchmesser ${2 * R} px)`);
@@ -126,27 +131,27 @@ for (const [name, xy] of Object.entries(ORTE)) {
   }
 }
 
-// Entwurfsziel seit 19.09.2026: mindestens 12 px freie Breite auf jeder Route.
 // Die Toleranz faengt nur die Rasterquantisierung ab, nicht die Anforderung selbst.
-const ZIEL = 12, TOLERANZ = STEP / 2;
+const TOLERANZ = STEP / 2;
 
 console.log('Breiteste Verbindung je Route (freie Breite fuer den Ballmittelpunkt):');
-let engste = Infinity;
-for (const [a, b] of ROUTEN) {
+for (const [a, b, regel] of ROUTEN) {
   const t = widest(ORTE[a], ORTE[b]);
+  const soll = regel.max === Infinity ? `>= ${regel.min}` : `${regel.min} bis ${regel.max}`;
   if (t === null) {
-    console.log(`  ZU      ${(a + ' -> ' + b).padEnd(42)} keine Verbindung`);
+    console.log(`  ZU      ${(a + ' -> ' + b).padEnd(38)} keine Verbindung (soll ${soll})`);
     fehler++;
     continue;
   }
   const breite = 2 * t;
-  engste = Math.min(engste, breite);
-  const ok = breite >= ZIEL - TOLERANZ;
-  console.log(`  ${ok ? 'ok    ' : 'ENG   '}  ${(a + ' -> ' + b).padEnd(42)} ${breite.toFixed(1)} px`);
-  if (!ok) fehler++;
+  const zuEng = breite < regel.min - TOLERANZ;
+  const zuWeit = breite > regel.max + TOLERANZ;
+  const marke = zuEng ? 'ENG   ' : zuWeit ? 'WEIT  ' : 'ok    ';
+  console.log(`  ${marke}  ${(a + ' -> ' + b).padEnd(38)} ${breite.toFixed(1).padStart(6)} px  (soll ${soll})`);
+  if (zuEng || zuWeit) fehler++;
 }
 
 console.log(fehler
-  ? `\n${fehler} Beanstandung(en) - Ziel sind ${ZIEL} px`
-  : `\nAlle Routen offen, engste ${engste.toFixed(1)} px (Ziel ${ZIEL} px, Rastertoleranz ${TOLERANZ})`);
+  ? `\n${fehler} Beanstandung(en)`
+  : `\nAlle Routen im Sollbereich (Rastertoleranz ${TOLERANZ} px)`);
 process.exit(fehler ? 1 : 0);

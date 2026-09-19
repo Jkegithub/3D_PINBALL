@@ -66,10 +66,12 @@ const EXPORTS = `
               flippers, rampPaths, plungerPath, oneWayGate }
 };`;
 
-function load() {
+// appPath erlaubt es, einen aelteren Stand gegen den aktuellen zu messen, etwa
+// per `git show <commit>:dist/app.js > /tmp/alt.js`.
+function load(appPath = APP) {
   const sandbox = createStubs();
   vm.createContext(sandbox);
-  vm.runInContext(fs.readFileSync(APP, 'utf8') + EXPORTS, sandbox);
+  vm.runInContext(fs.readFileSync(appPath, 'utf8') + EXPORTS, sandbox);
   return sandbox.__api;
 }
 

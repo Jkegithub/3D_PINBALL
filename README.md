@@ -18,7 +18,11 @@ Oder `dist/index.html` über einen beliebigen statischen Server ausliefern.
 Direkt aus dem Dateisystem geöffnet funktioniert es ebenfalls, nur der
 Download-Link für `layout-data.json` braucht dann einen Server.
 
-**Steuerung:** `←`/`A` und `→`/`D` Flipper, Leertaste Plunger, `F2` Diagnose.
+**Steuerung am Rechner:** `←`/`A` und `→`/`D` Flipper, Leertaste Plunger, `F2` Diagnose.
+
+**Am Telefon** ist die Spielfläche selbst das Bedienelement: linke Bildhälfte linker
+Flipper, rechte Hälfte rechter Flipper, beide gleichzeitig haltbar. Hängt die Kugel
+am Plunger, spannt jede Berührung stattdessen den Plunger.
 
 ## Darstellung
 

@@ -20,7 +20,7 @@ const aprons=[[[70,1170],[242,1325],[272,1470],[70,1470]],[[755,1170],[582,1325]
 const slings=[[[150,990],[265,1080],[180,1150]],[[674,990],[559,1080],[644,1150]]];
 const rampPaths={left:[[225,1080],[100,810],[110,300],[385,190],[690,250],[640,600],[540,1120]],right:[[599,1080],[724,810],[714,300],[439,190],[134,250],[184,600],[284,1120]]};
 const plungerPath=[[812,1340],[812,1040],[812,720],[790,610],[690,590]];
-const flippers={left:{x:242,y:1325,len:125,a:.28,target:.28,omega:0},right:{x:582,y:1325,len:125,a:Math.PI-.28,target:Math.PI-.28,omega:0}};
+const flippers={left:{x:242,y:1325,len:130,a:.28,target:.28,omega:0},right:{x:582,y:1325,len:130,a:Math.PI-.28,target:Math.PI-.28,omega:0}};
 function makeBall(x=812,y=1340,held=true){return{x,y,vx:0,vy:0,z:0,ramp:null,t:0,held,launching:false,shooter:held||x>755,saucer:0,saucerMode:'feed',pivotStuck:0,trail:[]}}
 function random(){rngState^=rngState<<13;rngState^=rngState>>>17;rngState^=rngState<<5;return(rngState>>>0)/4294967296}
 function ensureAudio(){if(!sound.enabled)return;if(!sound.ctx){const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;sound.ctx=new AudioContextClass();sound.master=sound.ctx.createGain();sound.master.gain.value=sound.volume;sound.master.connect(sound.ctx.destination);const length=sound.ctx.sampleRate*2,buffer=sound.ctx.createBuffer(1,length,sound.ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<length;i++)data[i]=Math.sin(i*12.9898)*.55+Math.sin(i*78.233)*.25;const source=sound.ctx.createBufferSource();source.buffer=buffer;source.loop=true;sound.rollFilter=sound.ctx.createBiquadFilter();sound.rollFilter.type='bandpass';sound.rollGain=sound.ctx.createGain();sound.rollGain.gain.value=0;source.connect(sound.rollFilter).connect(sound.rollGain).connect(sound.master);source.start()}if(sound.ctx.state==='suspended')sound.ctx.resume()}
@@ -300,7 +300,32 @@ function toggleAudio(){sound.enabled=!sound.enabled;if(sound.enabled)ensureAudio
 function clearInputs(){keys.left=keys.right=keys.plunger=false;charge=0}
 addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown'].includes(e.code)){e.preventDefault();return}if(e.code==='F2'){e.preventDefault();if(!e.repeat)toggleDebug();return}if(['ArrowLeft','ArrowRight','Space','KeyA','KeyD'].includes(e.code)){e.preventDefault();if(!running)start();setKey(e.code,true)}});addEventListener('keyup',e=>setKey(e.code,false));addEventListener('blur',clearInputs);document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInputs()});
 function bindHold(id,key){const el=document.querySelector(id);el.addEventListener('pointerdown',e=>{e.preventDefault();if(!running)start();keys[key]=true;if(key==='plunger')playSound('charge');el.setPointerCapture(e.pointerId)});el.addEventListener('pointerup',()=>{keys[key]=false;if(key==='plunger')launch()});el.addEventListener('pointercancel',()=>keys[key]=false)}
-bindHold('#leftButton','left');bindHold('#rightButton','right');bindHold('#launchButton','plunger');document.querySelector('#startButton').addEventListener('click',start);
+bindHold('#leftButton','left');bindHold('#rightButton','right');bindHold('#launchButton','plunger');
+/* Beruehrsteuerung auf der Spielflaeche: linke Haelfte linker Flipper, rechte Haelfte
+   rechter Flipper. Auf dem Telefon liegen keine zwei Finger auf kleinen Schaltflaechen,
+   deshalb ist die halbe Flaeche das Ziel. Mehrere Finger werden ueber pointerId
+   getrennt gefuehrt, beide Flipper lassen sich also gleichzeitig halten.
+   Haengt eine Kugel am Plunger, spannt jede Beruehrung stattdessen den Plunger. */
+const touchSide=new Map();
+function surfaceDown(e){
+ e.preventDefault();
+ if(!running){start();return}
+ if(balls.some(b=>b.held)){touchSide.set(e.pointerId,'plunger');keys.plunger=true;playSound('charge')}
+ else{const r=canvas.getBoundingClientRect(),side=(e.clientX-r.left)<r.width/2?'left':'right';
+  touchSide.set(e.pointerId,side);keys[side]=true}
+ try{canvas.setPointerCapture(e.pointerId)}catch(err){}
+}
+function surfaceUp(e){
+ const side=touchSide.get(e.pointerId);if(!side)return;
+ touchSide.delete(e.pointerId);
+ if(side==='plunger'){keys.plunger=false;launch()}else keys[side]=false;
+}
+canvas.addEventListener('pointerdown',surfaceDown);
+canvas.addEventListener('pointerup',surfaceUp);
+canvas.addEventListener('pointercancel',surfaceUp);
+canvas.addEventListener('lostpointercapture',surfaceUp);
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+document.querySelector('#startButton').addEventListener('click',start);
 function bindRange(id,key,out,format=v=>v){const el=document.querySelector(id);el.addEventListener('input',()=>{tuning[key]=key==='bounce'?+el.value/100:+el.value;document.querySelector(out).textContent=format(el.value)})}
 bindRange('#gravity','gravity','#gravityOut');bindRange('#bounce','bounce','#bounceOut',v=>`${v}%`);bindRange('#rampMin','rampMin','#rampOut');
 document.querySelector('#debugToggle').addEventListener('click',toggleDebug);
