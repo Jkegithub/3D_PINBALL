@@ -12,18 +12,9 @@ const g = api.geometry;
 const DT = 1 / 120;
 let fehler = 0;
 
-let bekannt = 0;
-
 function melde(ok, zeile) {
   console.log((ok ? '  ok      ' : '  FEHLER  ') + zeile);
   if (!ok) fehler++;
-}
-
-// Fuer belegte, noch offene Maengel: sichtbar, aber kein Fehlschlag. Ein Test, der
-// dauerhaft rot steht, wird nicht mehr gelesen. Auf melde() umstellen, sobald behoben.
-function notiere(ok, zeile, ursache) {
-  console.log((ok ? '  ok      ' : '  BEKANNT ') + zeile);
-  if (!ok) { console.log(`          Ursache: ${ursache}`); bekannt++; }
 }
 
 // Eine Kugel aussetzen und laufen lassen. "abgelaufen" heisst: sie hat den Drain
@@ -148,13 +139,81 @@ for (let i = 0; i < 120 * 4; i++) {
     for (let c = a + 1; c < frei.length; c++)
       minAbstand = Math.min(minAbstand, Math.hypot(frei[a].x - frei[c].x, frei[a].y - frei[c].y));
 }
-notiere(minAbstand >= 2 * g.R - 1,
-  `Multiball-Abstand${' '.repeat(11)}kleinster ${minAbstand.toFixed(1)} px (Soll ${2 * g.R})`,
-  'enterSaucer hat keine Belegtpruefung. Zwei Kugeln koennen den Saucer im selben '
-  + 'Frame verlassen; resolveSaucer setzt Geschwindigkeit, aber keine Position, '
-  + 'also starten sie uebereinander. Aelter als die Geometrieumstellung vom 19.09.2026.');
+melde(minAbstand >= 2 * g.R - 1,
+  `Multiball-Abstand${' '.repeat(11)}kleinster ${minAbstand.toFixed(1)} px (Soll ${2 * g.R})`);
 
-console.log(fehler
-  ? `\n${fehler} Beanstandung(en)${bekannt ? `, dazu ${bekannt} bekannte Abweichung(en)` : ''}`
-  : `\nAlle Pruefungen bestanden${bekannt ? `, ${bekannt} bekannte Abweichung(en)` : ''}`);
+// Der Saucer nimmt genau eine Kugel auf, und er nimmt dieselbe Kugel spaeter
+// wieder auf. Beides war bis 20.09.2026 kaputt: es passten zwei hinein, und
+// b.saucer blieb nach dem Auswurf dauerhaft negativ, womit der Waechter !b.saucer
+// die Kugel fuer immer aussperrte - sie konnte danach weder locken noch Multiball
+// ausloesen. Beide Faelle stehen hier, damit das nicht zurueckkehrt.
+console.log('\nSaucer:');
+api.resetGame(); api.ballSaveUntil = -1;
+const s1 = api.makeBall(PF - 20, 900, false), s2 = api.makeBall(PF + 20, 900, false);
+s1.vy = -700; s2.vy = -700; api.balls = [s1, s2];
+let gleichzeitig = 0;
+for (let i = 0; i < 120 * 3; i++) {
+  api.step(DT);
+  gleichzeitig = Math.max(gleichzeitig, api.balls.filter(v => v.saucer > 0).length);
+}
+melde(gleichzeitig <= 1, `nimmt hoechstens eine Kugel${' '.repeat(2)}gleichzeitig drin: ${gleichzeitig}`);
+
+api.resetGame(); api.ballSaveUntil = -1;
+const s3 = api.makeBall(PF, 900, false); s3.vy = -700; api.balls = [s3];
+let erste = null, zweite = null, frei = false;
+for (let i = 0; i < 120 * 12; i++) {
+  api.step(DT);
+  const c = api.balls[0];
+  if (!c || c.held) break;
+  if (c.saucer > 0) { if (erste === null) erste = i; else if (frei) { zweite = i; break; } }
+  if (erste !== null && c.saucer <= 0) {
+    frei = true;
+    if (i % 240 === 0) { c.x = PF; c.y = 900; c.vx = 0; c.vy = -700; }
+  }
+}
+melde(zweite !== null,
+  `dieselbe Kugel erneut${' '.repeat(7)}${zweite !== null ? 'wird nach ' + (zweite * DT).toFixed(2) + ' s wieder aufgenommen' : 'wird NIE wieder aufgenommen'}`);
+
+// Die eigentliche Nutzlast: eine Kugel nimmt erst einen Feed (Loops dunkel),
+// faehrt dann beide Loops und muss danach locken koennen. Vor dem 20.09.2026
+// scheiterte genau das - die Kugel war nach dem Feed dauerhaft vom Saucer
+// ausgesperrt. Zwischen den Abschnitten wird sie geparkt, damit sie nicht
+// selbst Loops anzuendet; b.saucer bleibt dabei absichtlich unangetastet.
+const kugel = () => api.balls[0];
+function parken() { const b = kugel(); b.ramp = null; b.z = 0; b.x = PF; b.y = 1240; b.vx = 0; b.vy = 0; }
+function inDenSaucer() {
+  const b = kugel(); b.ramp = null; b.z = 0; b.x = PF; b.y = 900; b.vx = 0; b.vy = -700;
+  let modus = 'nicht aufgenommen';
+  for (let i = 0; i < 120 * 3; i++) {
+    api.step(DT);
+    if (!kugel()) return 'Kugel weg';
+    if (kugel().saucer > 0) { modus = kugel().saucerMode; break; }
+  }
+  if (modus !== 'nicht aufgenommen')
+    for (let i = 0; i < 120 * 2 && kugel() && kugel().saucer > 0; i++) api.step(DT);
+  api.step(DT);
+  if (kugel()) parken();
+  return modus;
+}
+function ueberDenLoop(seite) {
+  const b = kugel(); b.ramp = null; b.z = 0;
+  b.x = g.rampPaths[seite][0][0]; b.y = 1100; b.vx = 0; b.vy = -900;
+  for (let i = 0, drauf = false; i < 120 * 8; i++) {
+    api.step(DT);
+    if (!kugel()) break;
+    if (kugel().ramp) drauf = true; else if (drauf) break;
+  }
+  if (kugel()) parken();
+}
+api.resetGame(); api.ballSaveUntil = -1;
+api.balls = [api.makeBall(PF, 1240, false)];
+const ersterModus = inDenSaucer();
+ueberDenLoop('left');
+ueberDenLoop('right');
+const zweiterModus = inDenSaucer();
+melde(ersterModus === 'feed', `Saucer bei dunklen Loops${' '.repeat(4)}${ersterModus} (erwartet feed)`);
+melde(zweiterModus === 'lock' && api.locks === 1,
+  `Lock nach vorherigem Feed${' '.repeat(3)}${zweiterModus}, locks=${api.locks} (erwartet lock, 1)`);
+
+console.log(fehler ? `\n${fehler} Beanstandung(en)` : '\nAlle Pruefungen bestanden');
 process.exit(fehler ? 1 : 0);

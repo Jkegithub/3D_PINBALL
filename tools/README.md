@@ -34,16 +34,19 @@ Der Rücklauf links liegt genau darauf. Rasterweite als Argument, Vorgabe 2 px.
 
 ## `physics-test.js`
 
-Neun Startlagen, beide Rampeneinläufe, Saucer, Plunger-Abschuss, Multiball.
+Neun Startlagen, beide Rampeneinläufe, Saucer, Plunger-Abschuss, Multiball,
+Mittelloch zwischen den Flippern und die Saucer-Regelkette.
 Eine Kugel gilt als festgefahren, wenn sie sich 2 s lang um weniger als 0,4 px
-je Schritt bewegt.
+je Schritt bewegt. Derzeit sind alle Prüfungen hart — keine offenen Mängel.
 
-`notiere()` kennzeichnet belegte, noch offene Mängel: sie werden ausgegeben, aber
-brechen den Lauf nicht ab. Ein Test, der dauerhaft rot steht, wird nicht mehr
-gelesen. Ist der Mangel behoben, auf `melde()` umstellen.
+Das **Mittelloch** wird gemessen, indem Kugeln senkrecht fallen gelassen werden
+und gezählt wird, welche unten ankommen, ohne je nach oben abgelenkt worden zu
+sein. Messlatte ist der Stand vor der 3D-Umstellung: 15 px. Zu weit heißt „fällt
+ständig durch", zu eng heißt „die Partie endet nie".
 
-Derzeit eine bekannte Abweichung: `enterSaucer` hat keine Belegtprüfung, zwei
-Kugeln können den Saucer im selben Frame übereinander verlassen.
+Die **Saucer-Regelkette** prüft, dass eine Kugel nach einem Feed später noch
+locken kann. Genau das war bis zum 20.09.2026 unmöglich, ohne dass irgendetwas
+sich gemeldet hätte.
 
 ## Wann laufen lassen
 

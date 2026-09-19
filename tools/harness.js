@@ -45,7 +45,15 @@ function createStubs() {
     document, console, Math, JSON, Date, String, Number, Array, Object,
     performance: { now: () => Date.now() },
     requestAnimationFrame: noop,
-    addEventListener: noop
+    addEventListener: noop,
+    // playSound() staffelt die Zweiklaenge von Lock und Multiball ueber setTimeout.
+    // Ohne diese Attrappe brach der Lauf genau dort ab - die Regelkette bis zum
+    // Multiball war deshalb bis 20.09.2026 nie durchgemessen worden.
+    // Die Rueckrufe laufen absichtlich nie: ohne AudioContext taete tone() ohnehin nichts.
+    setTimeout: () => 0,
+    clearTimeout: noop,
+    setInterval: () => 0,
+    clearInterval: noop
   };
   sandbox.window = sandbox;
   sandbox.globalThis = sandbox;
@@ -60,6 +68,7 @@ const EXPORTS = `
   get balls() { return balls }, set balls(v) { balls = v },
   get reserve() { return reserve },
   get locks() { return locks },
+  get loopLit() { return loopLit }, set loopLit(v) { loopLit = v },
   get simTime() { return simTime },
   set ballSaveUntil(v) { ballSaveUntil = v },
   geometry: { R, W, H, PF_CENTER, walls, slings, posts, bumpers, aprons,
