@@ -36,13 +36,14 @@ Kein WebGL, kein Framework — nur `CanvasRenderingContext2D`.
 
 ## Maße
 
-Tisch 460 × 808 mm, Neigung 6,5°, Kugel Ø 28,3 mm, Rampen auf +38 und +76 mm.
-Maßstab **1,6957 px/mm** auf beiden Achsen, Kugelradius 24 px.
+Tisch 438,8 × 770,6 mm, Neigung 6,5°, **Kugel Ø 27,0 mm**, Rampen auf +38 und +76 mm.
+Maßstab **1,7778 px/mm** auf beiden Achsen, Kugelradius 24 px.
 
 Maßgeblich ist die **Pixelgeometrie in `dist/app.js`**, die Millimeterangaben sind
-daraus abgeleitet und an der Tischbreite verankert. Das Layout ist auf Spielbarkeit
-getunt; die ursprünglich angegebenen 760 mm Länge stammten aus dem Entwurfspapier
-und waren nie gemessen — nachgerechnet sind es 808.
+daraus abgeleitet und **an der Kugel verankert**: Flipperkugeln sind mit 27,0 mm
+genormt, das ist eine physikalische Größe. Die Tischmaße folgen daraus — ein
+Kompakttisch ist ohnehin kein Normmaß. Die ursprünglich angegebenen 460 × 760 mm
+stammten aus dem Entwurfspapier und waren nie nachgemessen.
 
 `dist/layout-data.json` hält Maße, Geometrie, Regeln und Rampenpfade maschinenlesbar
 vor. **Die Datei wird erzeugt, nicht gepflegt** — siehe `tools/export-layout.js`.

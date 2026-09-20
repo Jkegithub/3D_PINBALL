@@ -4,8 +4,8 @@
   "warning": "ERZEUGTE DATEI - nicht von Hand bearbeiten. Aenderungen gehoeren in dist/app.js.",
   "source_units": "Canvas-Pixel, Ursprung oben links, y zeigt hangabwaerts zum Spieler",
   "scale": {
-    "anchor": "Tischbreite 460 mm",
-    "px_per_mm": 1.6957,
+    "anchor": "Kugeldurchmesser 27 mm",
+    "px_per_mm": 1.7778,
     "origin_px": [
       70,
       100
@@ -14,10 +14,10 @@
     "note": "Ein einziger Massstab fuer beide Achsen. Die Pixelgeometrie gilt, die Millimeterangaben sind daraus abgeleitet."
   },
   "table": {
-    "width_mm": 460,
-    "length_mm": 807.9,
+    "width_mm": 438.8,
+    "length_mm": 770.6,
     "slope_degrees": 6.5,
-    "ball_diameter_mm": 28.3
+    "ball_diameter_mm": 27
   },
   "levels_mm": {
     "PF0": 0,
@@ -339,7 +339,7 @@
     "wall_restitution": 0.72,
     "ramp_minimum_speed": 720,
     "speed_cap": 1850,
-    "gravity_m_per_s2": 0.484,
+    "gravity_m_per_s2": 0.461,
     "real_table_gravity_m_per_s2": 1.111,
     "note": "Nicht physikalisch. Vor einer Portierung neu abstimmen."
   },

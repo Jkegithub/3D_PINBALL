@@ -24,10 +24,12 @@ const ZIEL = path.join(__dirname, '..', 'dist', 'layout-data.json');
 // Wochen auf Spielbarkeit getunt worden, die Millimeterangaben stammen aus dem
 // Entwurfspapier und wurden nie gemessen.
 //
-// Verankert wird an der Tischbreite. Wer stattdessen die Kugel auf exakt 27,0 mm
-// festnageln will (Flipperkugeln sind genormt), setzt ANKER auf 'ball' - dann
-// aendern sich Breite und Laenge entsprechend. Das ist die einzige Stellschraube.
-const ANKER = 'breite';
+// Verankert wird an der KUGEL: Flipperkugeln sind mit 27,0 mm genormt, das ist
+// eine physikalische Groesse und keine Entwurfsentscheidung. Die Tischmasse folgen
+// daraus (438,8 x 770,6 mm) - ein Kompakttisch ist ohnehin kein Normmass.
+// Wer stattdessen die Tischbreite auf 460 mm festnageln will, setzt ANKER auf
+// 'breite'; die Kugel wird dann 28,3 mm. Das ist die einzige Stellschraube.
+const ANKER = 'ball';
 const ANKERMASS = { breite: 460, ball: 27 };
 // ---------------------------------------------------------------------------
 

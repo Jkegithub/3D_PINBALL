@@ -61,10 +61,14 @@ Die Geometrie steht darin absichtlich **nur in Pixeln**, dazu Maßstab und Urspr
 Zwei Darstellungen derselben Sache nebeneinander wären genau die Doppelpflege, die
 das Skript abschafft.
 
-Maßstab: **1,6957 px/mm auf beiden Achsen**, verankert an der Tischbreite von
-460 mm. Wer die Kugel stattdessen auf genormte 27,0 mm festnageln will, setzt im
-Skript `ANKER` auf `'ball'` — dann verschieben sich Breite und Länge entsprechend.
-Das ist die einzige Stellschraube.
+Maßstab: **1,7778 px/mm auf beiden Achsen**, verankert an der **Kugel**. Flipperkugeln
+sind mit 27,0 mm genormt — das ist eine physikalische Größe und keine
+Entwurfsentscheidung, deshalb stellt sie den Anker. Die Tischmaße folgen daraus mit
+438,8 × 770,6 mm; ein Kompakttisch ist ohnehin kein Normmaß.
+
+Wer stattdessen die Tischbreite auf 460 mm festnageln will, setzt im Skript `ANKER`
+auf `'breite'` — die Kugel wird dann 28,3 mm. **Das ist die einzige Stellschraube**,
+alles Weitere leitet sich ab.
 
 `--check` läuft im Pages-Workflow mit und fängt einen vergessenen Export sofort ab.
 
